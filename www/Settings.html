@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LiveWay - Connected Commuting</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <style>
+        h4{
+            font-size: 2.5vw;
+        }
+        .container-fluid{
+            padding-top: 60px;
+        }
+        h6{
+            font-size: 1.5vw;
+        }
+        .row{
+            padding-bottom: 10px;
+        }
+        .avatar {
+            vertical-align: middle;
+            justify-content: center;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            border: none;
+            box-shadow: 0 2px #999;
+        }
+        .avatar:active{
+            box-shadow: 0 0px #666;
+            transform: translateY(1px);
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-light mb-4">
+    <a class="navbar-brand" href="index.html">LiveWay</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent41" aria-controls="navbarSupportedContent41" aria-expanded="false"
+            aria-label="Toggle navigation"><span class="white-text"><i class="fas fa-bars fa-1x"></i></span></button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent41">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="index.html">Home<span class="sr-only"></span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="Map.html">Map</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="YourTrips.html">Your Trips</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="Settings.html">Settings</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="row mx-auto text-center">
+    <header class="col-sm-12">
+        <h3>Settings</h3>
+    </header>
+</div>
+
+<img id="profilePic" src="img/man.png" alt="Avatar" class="avatar">
+<div class="row mx-auto text-center">
+    <header class="col-sm-12">
+        <div id="username" style="padding-top: 6px">
+
+        </div>
+    </header>
+</div>
+
+<div class="row mx-auto text-center">
+    <div class="offset-sm-1 col-sm-10">
+            <div class="button btn btn-outline-info"  id="buttonHome">
+                <span class="fas fa-home">
+                    Home Address
+                </span>
+            </div>
+        <div class="button btn btn-outline-danger"  id="buttonLogout">
+                <span class="fas fa-power-off">
+                    Logout
+                </span>
+        </div>
+    </div>
+</div>
+
+<div class="row mx-auto text-center">
+    <div class="offset-sm-1 col-sm-10">
+        <div id="homeAddress">
+
+        </div>
+    </div>
+</div>
+
+<script>
+
+    window.onload = function(){
+        var obj = JSON.parse(localStorage.getItem("key"));
+        document.getElementById('username').innerText = "" + obj["name"];
+    };
+
+    document.getElementById("buttonHome").addEventListener("click",function() {
+        var address = prompt("Please enter your address:");
+        if (address != null) {
+            document.getElementById("homeAddress").innerHTML = "<li class='fas fa-home'></li> : " + address;
+        }
+    });
+
+    document.getElementById("buttonLogout").addEventListener("click",function() {
+        window.location.href="index.html";
+    });
+
+    document.getElementById("profilePic").addEventListener("click", takePicture);
+
+    function takePicture() {
+        navigator.camera.getPicture(onSuccess, onFail, {
+            quality: 50,
+            destinationType: Camera.DestinationType.DATA_URL
+        });
+
+        function onSuccess(imageData) {
+            var image = document.getElementById('profilePic');
+            image.src = "data:image/jpeg;base64," + imageData;
+            //$photo.attr("src", imageData);
+        }
+
+        function onFail(message) {
+            alert('Failed because: ' + message);
+        }
+    }
+
+    function cameraSuccess(imageData){
+        var image = document.getElementById('img');
+        image.src = imageData;
+    }
+
+    function cameraError(errorData){
+        navigator.notification.alert("Error: " + JSON.stringify(errorData), null, "Camera Error", "Ok");
+    }
+</script>
+</body>
+</html>

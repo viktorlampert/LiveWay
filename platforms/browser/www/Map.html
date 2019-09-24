@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LiveWay - Connected Commuting</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <style>
+        h4{
+            font-size: 2.5vw;
+        }
+        .container-fluid{
+            padding-top: 60px;
+        }
+        h6{
+            font-size: 1.5vw;
+        }
+        #map-canvas {
+            height: 100vh;
+            width: 100vw;
+        }
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-light mb-4">
+    <a class="navbar-brand" href="index.html">LiveWay</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent41" aria-controls="navbarSupportedContent41" aria-expanded="false"
+            aria-label="Toggle navigation"><span class="white-text"><i class="fas fa-bars fa-1x"></i></span></button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent41">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="index.html">Home<span class="sr-only"></span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="Map.html">Map</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="YourTrips.html">Your Trips</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="Settings.html">Settings</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="modal" tabindex="-1" role="dialog" id="myModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you currently on a bus?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Yes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="map-canvas"></div>
+<script>
+    document.addEventListener("deviceready", onDeviceReady, false);
+
+    // Cordova is ready
+    //
+    function onDeviceReady() {
+        navigator.geolocation.getCurrentPosition(updatePosition, onError);
+    }
+    function onError(error) {
+        alert('code: '    + error.code    + '\n' +
+            'message: ' + error.message + '\n');
+    }
+    window.lat = 43.469249;
+    window.lng = -79.698624;
+
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(updatePosition);
+        }
+        return null;
+    };
+
+    function updatePosition(position) {
+        if (position) {
+            window.lat = position.coords.latitude;
+            window.lng = position.coords.longitude;
+        }
+    }
+    setInterval(function(){updatePosition(getLocation());}, 10000);
+
+    function currentLocation() {
+        return {lat:window.lat, lng:window.lng};
+    };
+
+    var map;
+    var mark;
+
+
+    var initialize = function() {
+        map = new google.maps.Map(document.getElementById('map-canvas'), {
+            center: {lat: lat, lng: lng},
+            zoom: 14
+        });
+
+        mark = new google.maps.Marker({position:{lat:lat, lng:lng}, map:map});
+    };
+
+    window.initialize = initialize;
+
+    var redraw = function(payload) {
+        lat = payload.message.lat;
+        lng = payload.message.lng;
+
+        map.setCenter({lat:lat, lng:lng, alt:0});
+        mark.setPosition({lat:lat, lng:lng, alt:0});
+    };
+
+    var pnChannel = "map-channel";
+
+    var pubnub = new PubNub({
+        publishKey:   'AIzaSyCSGBBsukg8fpVfghE9qgIPDVqlD7wg0_Y',
+        subscribeKey: 'YOUR_SUB_KEY'
+    });
+
+    pubnub.subscribe({channels: [pnChannel]});
+    pubnub.addListener({message:redraw});
+
+    setInterval(function() {
+        pubnub.publish({channel:pnChannel, message:currentLocation()});
+    }, 5000);
+
+    document.addEventListener("DOMContentLoaded", initApp);
+
+    $('#myModal').on('shown.bs.modal', function () {
+        $('#myModal').trigger('focus')
+    });
+
+    function initApp() {
+        var obj = JSON.parse(localStorage.getItem("1"));
+        var btnSubmit = document.getElementById("refreshButton");
+        var data = null;
+        const url = "https://api.jsonbin.io/b/5cae01324b652413968200c1/6";
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", url);
+        xhr.timeout = 6000;
+        xhr.send(null);
+
+        xhr.onreadystatechange = function (evt) {
+            const DONE = 4;
+            const OK = 200;
+            if (xhr.readyState === DONE) {
+                if (xhr.status === OK) {
+                    var data = JSON.parse(xhr.responseText);
+                    console.log(data.section.cities[0].detail);
+                }
+            }
+        }
+    }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCSGBBsukg8fpVfghE9qgIPDVqlD7wg0_Y&callback=initialize"
+        async defer></script>
+</body>
+</html>

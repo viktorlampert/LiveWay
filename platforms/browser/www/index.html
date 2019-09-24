@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LiveWay - Connected Commuting</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <style>
+        h4{
+            font-size: 2.5vw;
+        }
+        .container-fluid{
+            padding-top: 60px;
+        }
+        h6{
+            font-size: 1.5vw;
+        }
+    </style>
+</head>
+<body>
+<!--<nav class="navbar navbar-light mb-4">-->
+    <!--<a class="navbar-brand" href="#">LiveWay</a>-->
+    <!--<button class="navbar-toggler" type="button" data-toggle="collapse"-->
+            <!--data-target="#navbarSupportedContent41" aria-controls="navbarSupportedContent41" aria-expanded="false"-->
+            <!--aria-label="Toggle navigation"><span class="white-text"><i class="fas fa-bars fa-1x"></i></span></button>-->
+    <!--<div class="collapse navbar-collapse" id="navbarSupportedContent41">-->
+        <!--<ul class="navbar-nav mr-auto">-->
+            <!--<li class="nav-item active">-->
+                <!--<a class="nav-link" href="index.html">Home<span class="sr-only"></span></a>-->
+            <!--</li>-->
+            <!--<li class="nav-item">-->
+                <!--<a class="nav-link" href="Map.html">Map</a>-->
+            <!--</li>-->
+            <!--<li class="nav-item">-->
+                <!--<a class="nav-link" href="YourTrips.html">Your Trips</a>-->
+            <!--</li>-->
+            <!--<li class="nav-item">-->
+                <!--<a class="nav-link" href="Settings.html">Settings</a>-->
+            <!--</li>-->
+        <!--</ul>-->
+    <!--</div>-->
+<!--</nav>-->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <table class="table table-bordered">
+                <div style="text-align: center">
+                    <img alt="" src="img\Annotation 2019-04-04 171638.jpg">
+                </div>
+                <tr>
+                    <h3 id="chooseText" class="text-center">Enter Your: </h3>
+                </tr>
+                <form >
+                    <div class="form-group w-50 p-3 mx-auto">
+                        <input type="name" class="form-control" id="username" aria-describedby="emailHelp" placeholder="Name">
+                    </div>
+                </form>
+                <tr class="d-none d-md-table-row">
+                    <div style="text-align: center" class="mt-4">
+                        <select id="busSystem" class="selectpicker">
+                            <option value="0" disabled selected>Bus System...</option>
+                            <option value="Oakville Transit">Oakville Transit</option>
+                            <option value="MiWay">MiWay</option>
+                            <option value="Go Bus">Go Bus</option>
+                        </select>
+                    </div>
+                </tr>
+                <tr class="d-none d-md-table-row">
+                    <div style="text-align: center" class="mt-4">
+                        <select id="busNumber" class="selectpicker">
+                            <option value="0" disabled selected>Bus Number...</option>
+                            <option value="Bus 1">Bus 1</option>
+                            <option value="Bus 2">Bus 2</option>
+                            <option value="Bus 3">Bus 3</option>
+                        </select>
+                    </div>
+                </tr>
+                <div align="center" class="mt-4">
+                    <a href="#" id="goBtn" class="btn btn-outline-danger">GO</a>
+                    <a href="#" id="refreshButton" class="btn btn-outline-danger">REFRESH</a>
+                </div><br>
+                <div class="alert alert-warning" role="alert" id="popupDiv">
+                    <span id="X" class="close" aria-hidden="true">&times;</span>
+                    <span id="popUp"> </span>
+                </div>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        var $busSystemVal = $("#busSystem");
+        var $busNumberVal = $("#busNumber");
+        var $name = $("#username");
+        var $counter = 0;
+        var $popUp = $("#popUp");
+        var errMsg = "";
+        document.getElementById("popupDiv").style.visibility="hidden";
+        function showPopup(popUpMsg) {
+            document.getElementById("popupDiv").style.visibility="visible";
+            $popUp.html(popUpMsg).parent().show(1000);
+            setTimeout(function(){
+                $popUp.parent().hide(1000);
+                }, 2000);
+        }
+        $("#goBtn").click(function () {
+            var nameTest = $name.val();
+            if (nameTest.length < 1) {
+                errMsg += 'Please enter a name<br>';
+                if (errMsg.length > 1) {
+                    showPopup(errMsg);
+                    return true;
+                }
+            }
+            else{
+                $counter++;
+                var obj = {busSystemVal: $busSystemVal.val(), busNumberVal: $busNumberVal.val(), name: $name.val(), counter: $counter}
+                localStorage.setItem($counter,JSON.stringify(obj));
+                window.location.href="Map.html";
+                $counter = 0;
+            }
+        });
+        $("#refreshButton").click(function () {
+            $("#busSystem").val(0);
+            $("#busNumber").val(0);
+            $("#username").val("");
+        })
+    });
+</script>
+</body>
+</html>

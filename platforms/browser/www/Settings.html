@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LiveWay - Connected Commuting</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <style>
+        h4{
+            font-size: 2.5vw;
+        }
+        .container-fluid{
+            padding-top: 60px;
+        }
+        h6{
+            font-size: 1.5vw;
+        }
+        .row{
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-light mb-4">
+    <a class="navbar-brand" href="index.html">LiveWay</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent41" aria-controls="navbarSupportedContent41" aria-expanded="false"
+            aria-label="Toggle navigation"><span class="white-text"><i class="fas fa-bars fa-1x"></i></span></button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent41">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="index.html">Home<span class="sr-only"></span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="Map.html">Map</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="YourTrips.html">Your Trips</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="Settings.html">Settings</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div class="row mx-auto text-center">
+    <header class="col-sm-12">
+        <h3>Settings</h3>
+    </header>
+</div>
+<script>
+    document.getElementById("buttonHome").addEventListener("click",function() {
+        var address = prompt("Please enter your address:");
+        if (address != null) {
+            document.getElementById("homeAddress").innerHTML = address;
+        }
+    });
+
+    /* Better approach with Promises:
+    const deviceReady = new Promise((resolve) => {
+        document.addEventListener("deviceready", resolve, false);
+    });
+
+    const DOMReady = new Promise((resolve) => {
+        document.addEventListener("DOMContentLoaded", resolve, false);
+    });
+
+    Promise.all([ DOMReady, deviceReady ]) .then(initApp);
+    */
+
+
+    /*  Install corresponding Cordova CORE plugins:
+	cordova plugin add cordova-plugin-dialogs
+	cordova plugin add cordova-plugin-camera
+    */
+
+
+    function initApp() {
+
+        // Uncomment the line below if you want Notification to be shown!
+
+        // navigator.notification.alert("Cordova is ready", null, 'You Cordova is ready', 'Ok');
+
+        document.getElementById("img").addEventListener("click", function(){
+            var options = {
+                quality: 25,
+                //destinationType: Camera.DestinationType.DATA_URL,
+                destinationType: Camera.DestinationType.FILE_URI,
+                cameraDirection: Camera.Direction.FRONT,
+                encodingType: Camera.EncodingType.JPEG,
+                correctOrientation: true,
+                allowEdit: true
+            }
+            navigator.camera.getPicture(cameraSuccess, cameraError, options);
+
+        });
+
+
+
+    }
+
+    function cameraSuccess(imageData){
+        // Uncomment the line below to see what you get as imageData:
+        //navigator.notification.alert(imageData, null, "Photo Results", "Ok");
+
+        var image = document.getElementById('img');
+        // We must use Camera.DestinationType.FILE_URI  most of the time - see above!
+        image.src = imageData;
+
+        // Use this only if you need raw image data.
+        // You also must activate Camera.DestinationType.DATA_URL option above.
+        //image.src = "data:image/jpeg;base64," + imageData;
+    }
+
+    function cameraError(errorData){
+        navigator.notification.alert("Error: " + JSON.stringify(errorData), null, "Camera Error", "Ok");
+    }
+
+</script>
+</body>
+</html>

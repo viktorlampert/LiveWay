@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Geolocation</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.19.0.min.js"></script>
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+         * element that contains the map. */
+        #map-canvas {
+            height: 100vh;
+            width: 100vw;
+        }
+        /* Optional: Makes the sample page fill the window. */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-light mb-4">
+    <a class="navbar-brand" href="index.html">LiveWay</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent41" aria-controls="navbarSupportedContent41" aria-expanded="false"
+            aria-label="Toggle navigation"><span class="white-text"><i class="fas fa-bars fa-1x"></i></span></button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent41">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="index.html">Home<span class="sr-only"></span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="Map.html">Map</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="YourTrips.html">Your Trips</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="Settings.html">Settings</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div id="map-canvas"></div>
+<script>
+
+    // Wait for Cordova to load
+    //
+    document.addEventListener("deviceready", onDeviceReady, false);
+
+    // Cordova is ready
+    //
+    function onDeviceReady() {
+        navigator.geolocation.getCurrentPosition(updatePosition, onError);
+    }
+    function onError(error) {
+        alert('code: '    + error.code    + '\n' +
+            'message: ' + error.message + '\n');
+    }
+
+    window.lat = 43.469249;
+    window.lng = -79.698624;
+
+    function getLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(updatePosition);
+        }
+        return null;
+    }
+    function updatePosition(position) {
+        if (position) {
+            window.lat = position.coords.latitude;
+            window.lng = position.coords.longitude;
+        }
+    }
+    setInterval(function(){updatePosition(getLocation());}, 10000);
+
+    function currentLocation() {
+        return {lat:window.lat, lng:window.lng};
+    }
+    var map;
+    var mark;
+
+
+    var initialize = function() {
+        map = new google.maps.Map(document.getElementById('map-canvas'), {
+            center: {lat: lat, lng: lng},
+            zoom: 18
+        });
+
+        mark = new google.maps.Marker({position: {lat: lat, lng: lng}, map: map});
+        // bus = new google.maps.Marker({position:{lat:lat, lng:lng}, map:map});
+
+        // var iconBase = document.createElement("img");
+        // iconBase.src = "www/img/Webp.net-resizeimage.png";
+
+        var icon = {
+            url: "https://static.thenounproject.com/png/368019-200.png",
+            scaledSize: new google.maps.Size(50, 50),
+            origin: new google.maps.Point(0, 0),
+            anchor: new google.maps.Point(0, 0)
+
+        };
+
+
+
+        // var defaultLat = 43.474726;
+        // var defaultLng = -79.701463;
+        //
+        //
+        //
+        //
+        // myFunction();
+        // myFunction();
+        // myFunction();
+        // myFunction();
+        // myFunction();
+        // myFunction();
+        // myFunction();
+
+
+        // function myFunction() {
+        //     setInterval(
+        //         function()
+        //         {
+        //             defaultLat -= 0.000328;
+        //             defaultLng += 0.000494;
+        //
+        //             var marker = new google.maps.Marker({
+        //                 position: new google.maps.LatLng(defaultLat, defaultLng),
+        //                 map: map,
+        //                 icon: icon
+        //             }   );
+        //             delete(marker);
+        //         },
+        //         1000);
+        // }
+
+        // 328   494
+        //
+        //
+        //
+        // 43.475034, -79.701918
+        //
+        // 43.474706, -79.701424
+
+
+
+        // var marker = new google.maps.Marker({
+        //     position: new google.maps.LatLng(43.469830010272084, -79.70318412728376),
+        //     map: map,
+        //     icon: icon
+        // }   );
+
+
+
+
+
+
+
+
+
+            // while (true) {
+            //     defaultLat += 0.00000001;
+            //     defaultLng += 0.00000001;
+            //
+            //     // var marker = new google.maps.Marker({
+            //     //     position: new google.maps.LatLng(defaultLat, defaultLng),
+            //     //     map: map,
+            //     //     icon: icon
+            //     // });
+            // }
+
+
+
+
+            // // while(true) {
+            //  var marker = new google.maps.Marker({
+            //      defaultLat+= 0.00001;
+            // defaultLng += 0.00001;
+            // position: new google.maps.LatLng(defaultLat, defaultLng),
+            // map: map,
+            // icon: icon
+            // });
+
+        // }
+
+        // defaultLat = 43.469830010272084
+        //defaultLng = -79.70318412728376
+
+        //function myFunction(defaultLat,defaultLng) {
+        // while(true) {
+        //  var marker = new google.maps.Marker({
+        //  defaultLat + 0.00001;
+        // defaultLng + 0.00001;
+        // position: new google.maps.LatLng(defaultLat, -defaultLng),
+        // map: map,
+        // icon: icon
+        // }
+        // break;
+        //})
+
+
+        //
+        //
+        //
+        //
+        //
+        //
+        // var iconBase =
+        //     'http://www.clker.com/cliparts/2/0/1/b/1271843159321318394bus_stop2-th.png';
+        //
+        // var icons = {
+        //
+        //     info: {
+        //         icon: iconBase,
+        //         scaledSize: new google.maps.Size(10, 10)
+        //     }
+        // };
+        //
+        // var features = [
+        //     {
+        //         position: new google.maps.LatLng(43.469830010272084, -79.70318412728376),
+        //         type: 'info'
+        //     }, {
+        //         position: new google.maps.LatLng(43.46980010272084, -79.70318412728376),
+        //         type: 'info'
+        //     }
+        // ];
+        //
+        // // Create markers.
+        // for (var i = 0; i < features.length; i++) {
+        //     var marker = new google.maps.Marker({
+        //         position: features[i].position,
+        //         icon: icons[features[i].type].icon,
+        //         map: map
+        //     });
+        // }
+
+
+
+        window.initialize = initialize;
+
+        var redraw = function (payload) {
+            lat = payload.message.lat;
+            lng = payload.message.lng;
+
+            map.setCenter({lat: lat, lng: lng, alt: 0});
+            mark.setPosition({lat: lat, lng: lng, alt: 0});
+        };
+
+        var pnChannel = "map-channel";
+
+        var pubnub = new PubNub({
+            publishKey: 'AIzaSyCSGBBsukg8fpVfghE9qgIPDVqlD7wg0_Y',
+            subscribeKey: 'AIzaSyC3-lh4LiCXQLhGptE3kT8FK9SYx3o_1WA'
+        });
+
+        pubnub.subscribe({channels: [pnChannel]});
+        pubnub.addListener({message: redraw});
+
+        setInterval(function () {
+            pubnub.publish({channel: pnChannel, message: currentLocation()});
+        }, 5000);
+
+        document.addEventListener("DOMContentLoaded", initApp);
+
+        function initApp() {
+            var data = null;
+            const url = "https://api.jsonbin.io/b/5cafb270c0338e327afea82c";
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", url);
+            xhr.timeout = 6000;
+            xhr.send(null);
+
+            xhr.onreadystatechange = function (evt) {
+                const DONE = 4;
+                const OK = 200;
+                if (xhr.readyState === DONE) {
+                    if (xhr.status === OK) {
+                        var data = JSON.parse(xhr.responseText);
+                        console.log(data.section.locations[0].detail.latitude);
+                    }
+                }
+            }
+        }
+    }
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC3-lh4LiCXQLhGptE3kT8FK9SYx3o_1WA&callback=initialize"
+        async defer></script>
+</body>
+</html>
